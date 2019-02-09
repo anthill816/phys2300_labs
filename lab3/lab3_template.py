@@ -45,7 +45,11 @@ def parse_data(infile):
     """
     wdates = []             # list of dates data
     wtemperatures = []      # list of temperarture data
-
+    with open(infile, mode='r') as file:        #open file
+        for line in file:
+            line_words = line.split()       #separate entries by space
+            wdates.append(line_words[2])    #add date to wdates list
+            wtemperatures.append(line_words[3])
     return wdates, wtemperatures
 
 
