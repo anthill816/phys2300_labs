@@ -83,14 +83,14 @@ def calc_mean_std_dev(wdates, wtemp):
        size = len(monthsandtemps[month])        #number of temps in a month
        means += [total / size]                  #add mean 
 
-    for month in monthsandtemps:
+    for month in monthsandtemps:            #find standard deviation per month
         std_dev += [np.std(monthsandtemps[month])]
 
-    from pprint import pprint as pp
-    pp(std_dev)
+    # from pprint import pprint as pp
+    # pp(std_dev)
 
-    print(len(means))
-    print(len(std_dev))
+    # print(len(means))
+    # print(len(std_dev))
     return means, std_dev
 
 
@@ -134,7 +134,32 @@ def plot_data_task2(xxx):
     """
     pass
 
+def getyearandtemp(wdates, wtemps):  
+    """
+    Gather years and list of temps in each year
+    param: wdates = list of dates
+    param: wtemps = list of temps
 
+    return: wyear = list of years
+    return: wtemp = list of list of temps
+    """
+    wyear = []
+    wtemp = []
+    yearsandtemps = {}
+    index = 0
+    for date in wdates:     #collect all years as floats
+        year = date[0:4]
+        if(year not in yearsandtemps):  
+            wyear += [year] 
+            yearsandtemps[year] = [float(wtemps[index])]
+        else:
+            yearsandtemps[year] += [float(wtemps[index])]
+        index += 1
+
+    for year in yearsandtemps:
+        wtemp +=[yearsandtemps[year]]
+
+    return wyear, wtemp
 
 def main(infile):
     weather_data = infile    # take data file as input parameter to file
@@ -143,6 +168,7 @@ def main(infile):
     month_mean, month_std = calc_mean_std_dev(wdates, wtemperatures)
     # TODO: Make sure you have a list of:
     #       1) years, 2) temperature, 3) month_mean, 4) month_std
+    wyear, wtemp = getyearandtemp(wdates, wtemperatures)
     #plot_data_task1(wyear, wtemp, month_mean, month_std)
     # TODO: Create the data you need for this
     # plot_data_task2(xxx)
