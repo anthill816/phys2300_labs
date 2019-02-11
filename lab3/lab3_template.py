@@ -50,7 +50,8 @@ def parse_data(infile):
         for line in file:
             line_words = line.split()       #separate entries by space
             wdates.append(line_words[2])    #add date to wdates list
-            wtemperatures.append(line_words[3])
+            wtemperatures.append(line_words[3]) #add temperature to wtemperatures list
+
     return wdates, wtemperatures
 
 
@@ -66,17 +67,14 @@ def calc_mean_std_dev(wdates, wtemp):
     index = 0
 
     for date in wdates:         #create a dictionary with the month as key as temps as values
-        if(date[4:6] in monthsandtemps):        #add temp value if the month is already a key
+        if(date[4:6] in monthsandtemps):        #add temperature value if the month is already a key
             monthsandtemps[(date[4:6])] += [float(wtemp[index])]
-        else:    #add month as key and first temp value of that month to dictionary
+        else:    #add month as key and first temperature value of that month to dictionary
             monthsandtemps[(date[4:6])] = [float(wtemp[index])]
         index += 1
-    
-    #from pprint import pprint as pp
-    #pp(monthsandtemps)
 
-    means = []
-    std_dev = []
+    means = []      #list of means per month
+    std_dev = []    #list of std_dev per month
    
     for month in monthsandtemps:        #find mean per month
        total = sum(monthsandtemps[month])       #sum of all values in a month
@@ -86,11 +84,6 @@ def calc_mean_std_dev(wdates, wtemp):
     for month in monthsandtemps:            #find standard deviation per month
         std_dev += [np.std(monthsandtemps[month])]
 
-    # from pprint import pprint as pp
-    # pp(std_dev)
-
-    # print(len(means))
-    # print(len(std_dev))
     return means, std_dev
 
 
@@ -103,11 +96,6 @@ def plot_data_task1(wyear, wtemp, month_mean, month_std):
     :param: month_mean: list with month's mean values
     :param: month_std: list with month's mean standard dev values
     """
-
-    # from pprint import pprint as pp
-    # print(wyear)
-    print(min(wyear))
-    print(max(wyear))
     # Create canvas with two subplots
     plt.figure()
     plt.subplot(2, 1, 1)                # select first subplot
@@ -142,37 +130,22 @@ def plot_data_task2(xxx):
 def getyearandtemp(wdates, wtemps):  
     """
     Gather years and list of temps in each year
-    param: wdates = list of dates
-    param: wtemps = list of temps
+    param: wdates = list of dates as strings
+    param: wtemps = list of temps as strings
 
-    return: wyear = list of years
-    return: wtemp = list of list of temps
+    return: wyear = list of years as floats
+    return: wtemp = list of temps as floats
     """
     wyear = []      #list of years
-    wtemp = []      #list of list of temps
-    yearsandtemps = {}  #dictionary with years and temps
-    index = 0
-
-    # for date in wdates:     #collect all years as floats
-    #     year = date[0:4]
-    #     if(year not in yearsandtemps):  #if year key doesn't exist:
-    #         wyear += [year]                 #add year to wyear list
-    #         yearsandtemps[year] = [float(wtemps[index])]    #add year as key to years and temps along with first temp of year as value
-    #     else:
-    #         yearsandtemps[year] += [float(wtemps[index])]   #add temp value to year
-    #     index += 1
+    wtemp = []      #list of temps
 
     for date in wdates:     #collect all years as floats
         year = date[0:4]
         wyear += [float(year)]                 #add year to wyear list
-        if(year not in yearsandtemps):  #if year key doesn't exist:
-            yearsandtemps[year] = [float(wtemps[index])]    #add year as key to years and temps along with first temp of year as value
-        else:
-            yearsandtemps[year] += [float(wtemps[index])]   #add temp value to year
-        index += 1
 
-    for year in yearsandtemps:  #add list of temps for each year to wtemp list
-        wtemp += yearsandtemps[year]   
+
+    for temp in wtemps:     #collect all temps as floats
+        wtemp += [float(temp)]
 
     return wyear, wtemp
 
@@ -184,6 +157,7 @@ def main(infile):
     # TODO: Make sure you have a list of:
     #       1) years, 2) temperature, 3) month_mean, 4) month_std
     wyear, wtemp = getyearandtemp(wdates, wtemperatures)
+
     plot_data_task1(wyear, wtemp, month_mean, month_std)
     # TODO: Create the data you need for this
     # plot_data_task2(xxx)
