@@ -45,12 +45,17 @@ def parse_data(infile):
     """
     wdates = []             # list of dates data
     wtemperatures = []      # list of temperature data
+    wlows = []
+    whighs = []
     with open(infile, mode='r') as file:        #open file
         file.readline()
         for line in file:
             line_words = line.split()       #separate entries by space
             wdates.append(line_words[2])    #add date to wdates list
             wtemperatures.append(line_words[3]) #add temperature to wtemperatures list
+            if(line_words[17] != 9999.99 and line_words[18] != 9999.99):
+                whighs.append(float(line_words[17]))
+                wlows.append(float(line_words[18]))
 
     return wdates, wtemperatures
 
