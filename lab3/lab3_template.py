@@ -44,8 +44,9 @@ def parse_data(infile):
                         One list with the information from the fourth column (temperature)
     """
     wdates = []             # list of dates data
-    wtemperatures = []      # list of temperarture data
+    wtemperatures = []      # list of temperature data
     with open(infile, mode='r') as file:        #open file
+        file.readline()
         for line in file:
             line_words = line.split()       #separate entries by space
             wdates.append(line_words[2])    #add date to wdates list
@@ -61,8 +62,22 @@ def calc_mean_std_dev(wdates, wtemp):
     :param wtemp: temperature per month
     :return: means, std_dev: months_mean and std_dev lists
     """
+    monthsandtemps = {}         #dictionary with month keys and temp values
+    index = 0
+
+    for date in wdates:         #create a dictionary with the month as key as temps as values
+        if(date[0:6] in monthsandtemps):        #add temp value if the month is already a key
+            monthsandtemps[(date[0:6])] += [float(wtemp[index])]
+        else:    #add month as key and first temp value of that month to dictionary
+            monthsandtemps[(date[0:6])] = [float(wtemp[index])]
+        index += 1
+    
+    #from pprint import pprint as pp
+    #pp(monthsandtemps)
+
     means = []
     std_dev = []
+   
 
     return means, std_dev
 
@@ -108,6 +123,7 @@ def plot_data_task2(xxx):
     pass
 
 
+
 def main(infile):
     weather_data = infile    # take data file as input parameter to file
     wdates, wtemperatures = parse_data(weather_data)
@@ -115,7 +131,7 @@ def main(infile):
     month_mean, month_std = calc_mean_std_dev(wdates, wtemperatures)
     # TODO: Make sure you have a list of:
     #       1) years, 2) temperature, 3) month_mean, 4) month_std
-    plot_data_task1(wyear, wtemp, month_mean, month_std)
+    #plot_data_task1(wyear, wtemp, month_mean, month_std)
     # TODO: Create the data you need for this
     # plot_data_task2(xxx)
 
