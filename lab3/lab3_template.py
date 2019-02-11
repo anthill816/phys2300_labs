@@ -78,7 +78,19 @@ def calc_mean_std_dev(wdates, wtemp):
     means = []
     std_dev = []
    
+    for month in monthsandtemps:        #find mean per month
+       total = sum(monthsandtemps[month])       #sum of all values in a month
+       size = len(monthsandtemps[month])        #number of temps in a month
+       means += [total / size]                  #add mean 
 
+    for month in monthsandtemps:
+        std_dev += [np.std(monthsandtemps[month])]
+
+    from pprint import pprint as pp
+    pp(std_dev)
+
+    print(len(means))
+    print(len(std_dev))
     return means, std_dev
 
 
