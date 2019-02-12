@@ -53,11 +53,10 @@ def parse_data(infile):
             line_words = line.split()       #separate entries by space
             wdates.append(line_words[2])    #add date to wdates list
             wtemperatures.append(line_words[3]) #add temperature to wtemperatures list
-            if(line_words[17] != 9999.99 and line_words[18] != 9999.99):
-                whighs.append(float(line_words[17]))
-                wlows.append(float(line_words[18]))
+            whighs.append(float(line_words[17]))
+            wlows.append(float(line_words[18]))
 
-    return wdates, wtemperatures
+    return wdates, wtemperatures, wlows, whighs
 
 
 def calc_mean_std_dev(wdates, wtemp):
@@ -68,7 +67,9 @@ def calc_mean_std_dev(wdates, wtemp):
     :param wtemp: temperature per month
     :return: means, std_dev: months_mean and std_dev lists
     """
-    monthsandtemps = {}         #dictionary with month keys and temp values
+    monthsandtemps = {"01": [], "02": [], "03": [], "04": [],
+                     "05": [], "06": [], "07": [], "08": [],
+                     "09": [], "10": [], "11": [], "12": []}         #dictionary with month keys and temp values
     index = 0
 
     for date in wdates:         #create a dictionary with the month as key as temps as values
@@ -123,16 +124,22 @@ def plot_data_task1(wyear, wtemp, month_mean, month_std):
     plt.show()      # display plot
 
 
-def plot_data_task2(xxx):
+def plot_data_task2(wyear, whigh, wlow):
     """
     Create plot for Task 2. Describe in here what you are plotting
     Also modify the function to take the params you think you will need
     to plot the requirements.
     :param: xxx??
     """
-    pass
+    plt.title("High and Low Temperatures at Ogden")
+    plt.plot(wyear, whigh, "bo", label="Highest Temps")
+    plt.plot(wyear, wlow, "ro", label="Lowest Temps")
+    plt.ylabel("Temperature, F")
+    plt.xlabel("Decimal Year")
+    plt.legend()
+    plt.show()
 
-def getyearandtemp(wdates, wtemps):  
+def get_year_and_temp(wdates, wtemps):  
     """
     Gather years and list of temps in each year
     param: wdates = list of dates as strings
@@ -154,18 +161,61 @@ def getyearandtemp(wdates, wtemps):
 
     return wyear, wtemp
 
+def find_hi_lo(wdates, whighs, wlows):
+    """
+    Find highest and lowest temerature per year
+
+    Param: wdates = list of dates
+    Param: whighs = list of highs
+    Param: wlows = list of lows
+
+    Return: years = list of years
+    Return: hiyear = list of valid highs per year
+    Return: loyear = list of valid lows per year
+    """
+    hitempsperyear = {}     #dictionary of high temps per year
+    lotempsperyear = {}     #dictionary of low temps per year
+    index = 0
+
+    hiyear = []
+    loyear = []
+    years = []
+
+    for date in wdates:
+        year = date[0:4]
+        if year in hitempsperyear:
+            if(whighs[index] != 9999.9):
+                hitempsperyear[year] += [float(whighs[index])]
+            if(wlows[index] != 9999.9):
+                lotempsperyear[year] += [float(wlows[index])]
+        else:
+            if(whighs[index] != 9999.9):
+                hitempsperyear[year] = [float(whighs[index])]
+            if(wlows[index] != 9999.9):
+                 lotempsperyear[year] = [float(wlows[index])]
+        index += 1
+
+    for year in hitempsperyear:
+        years += [float(year)]
+        hiyear.append(max(hitempsperyear[year]))      #store max value in each year
+    for year in lotempsperyear:
+        loyear.append(min(lotempsperyear[year]))    #store min value for each year
+
+    return years, hiyear, loyear
+
 def main(infile):
     weather_data = infile    # take data file as input parameter to file
-    wdates, wtemperatures = parse_data(weather_data)
+    wdates, wtemperatures, wlows, whighs = parse_data(weather_data)
     # Calculate mean and standard dev per month
     month_mean, month_std = calc_mean_std_dev(wdates, wtemperatures)
     # TODO: Make sure you have a list of:
     #       1) years, 2) temperature, 3) month_mean, 4) month_std
-    wyear, wtemp = getyearandtemp(wdates, wtemperatures)
-
+    wyear, wtemp = get_year_and_temp(wdates, wtemperatures)
     plot_data_task1(wyear, wtemp, month_mean, month_std)
     # TODO: Create the data you need for this
-    # plot_data_task2(xxx)
+
+    years, highs, lows = find_hi_lo(wdates, whighs, wlows)
+    plot_data_task2(years, highs, lows)
 
 
 
