@@ -130,6 +130,10 @@ def plot_data_task2(wyear, whigh, wlow):
     Also modify the function to take the params you think you will need
     to plot the requirements.
     :param: xxx??
+    Plot the highest and lowest temperatures in Ogden for each year
+    Param: wyear = list of years
+    Param: whigh = list of highest temp of each year
+    Param: wlow = list of lowest temp of each year
     """
     plt.title("High and Low Temperatures at Ogden")
     plt.plot(wyear, whigh, "bo", label="Maximum Temp")
