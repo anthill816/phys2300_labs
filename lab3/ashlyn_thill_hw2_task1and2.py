@@ -181,6 +181,7 @@ def find_hi_lo(wdates, whighs, wlows):
     loyear = []
     years = []
 
+    #get rid of any values equal to '9999.9'
     for date in wdates:
         year = date[0:4]
         if year in hitempsperyear:
