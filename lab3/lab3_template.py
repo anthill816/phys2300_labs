@@ -132,8 +132,8 @@ def plot_data_task2(wyear, whigh, wlow):
     :param: xxx??
     """
     plt.title("High and Low Temperatures at Ogden")
-    plt.plot(wyear, whigh, "bo", label="Highest Temps")
-    plt.plot(wyear, wlow, "ro", label="Lowest Temps")
+    plt.plot(wyear, whigh, "bo", label="Maximum Temp")
+    plt.plot(wyear, wlow, "ro", label="Minimum Temp")
     plt.ylabel("Temperature, F")
     plt.xlabel("Decimal Year")
     plt.legend()
