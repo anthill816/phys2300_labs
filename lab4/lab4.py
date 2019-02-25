@@ -24,16 +24,11 @@ def read_wx_data(wx_file, harbor_data):
         file.readline()
         for line in file:
             line_words = line.split(',')       #separate entries by space
-            wx_times.append(line_words[1])    #add date to wdates list
-            wx_temperatures.append(line_words[3]) #add temperature to wtemperatures list
+            wx_times.append(line_words[1])    #add times to wx_times list
+            wx_temperatures.append(line_words[3]) #add temperature to wx_temperatures list
     
-    index = 0
-    for time in wx_times:
-        if(time in harbor_data):
-            harbor_data[time] += wx_temperatures[index]
-        else:
-            harbor_data[time] = wx_temperatures[index]
-        index += 1
+    harbor_data["wx_times"] = wx_times
+    harbor_data["wx_temperatures"] = wx_temperatures
             
 
 
@@ -46,7 +41,20 @@ def read_gps_data(gps_file, harbor_data):
     :param harbor_data: A dictionary to collect data.
     :return: Nothing
     """
-    pass
+    gps_times = []
+    gps_altitude = []
+
+    with open(gps_file, mode='r') as file:        #open file
+        file.readline()     #skip two lines
+        file.readline()
+        for line in file:
+            line_words = line.split()       #separate entries by space
+            gps_times.append("{0}:{1}:{2}".format(line_words[0], line_words[1], line_words[2]))    #add times to gps_times list
+            gps_altitude.append(line_words[6])  #add altitude to gps_altitude list
+    harbor_data["gps_times"] = gps_times
+    harbor_data["gps_altitude"] = gps_altitude
+    
+    
 
 
 def interpolate_wx_from_gps(harbor_data):
@@ -82,8 +90,9 @@ def main():
     gps_file = sys.argv[2]                  # second program input param
 
     read_wx_data(wx_file, harbor_data)      # collect weather data
-    pp.pprint(harbor_data)
     read_gps_data(gps_file, harbor_data)    # collect gps data
+        
+    pp.pprint(harbor_data["gps_times"])
     interpolate_wx_from_gps(harbor_data)    # calculate interpolated data
     plot_figs(harbor_data)                  # display figures
 
