@@ -2,12 +2,13 @@
 Assignment to learn how to interpolate data1
 '''
 import sys
-# import matplotlib.pyplot as plt
-# import numpy as np
-# import scipy
-# import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np 
+import scipy
+import pandas as pd
+import pprint as pp
 
-https://youtu.be/-zvHQXnBO6c
+#https://youtu.be/-zvHQXnBO6c
 def read_wx_data(wx_file, harbor_data):
     """
     Read temperature and time data from file.
@@ -15,8 +16,26 @@ def read_wx_data(wx_file, harbor_data):
     :param wx_file: File object with data
     :param harbor_data: A dictionary to collect data.
     :return: Nothing
-    """
-    pass
+    """   
+    wx_times= []
+    wx_temperatures = []
+
+    with open(wx_file, mode='r') as file:        #open file
+        file.readline()
+        for line in file:
+            line_words = line.split(',')       #separate entries by space
+            wx_times.append(line_words[1])    #add date to wdates list
+            wx_temperatures.append(line_words[3]) #add temperature to wtemperatures list
+    
+    index = 0
+    for time in wx_times:
+        if(time in harbor_data):
+            harbor_data[time] += wx_temperatures[index]
+        else:
+            harbor_data[time] = wx_temperatures[index]
+        index += 1
+            
+
 
 
 def read_gps_data(gps_file, harbor_data):
@@ -63,6 +82,7 @@ def main():
     gps_file = sys.argv[2]                  # second program input param
 
     read_wx_data(wx_file, harbor_data)      # collect weather data
+    pp.pprint(harbor_data)
     read_gps_data(gps_file, harbor_data)    # collect gps data
     interpolate_wx_from_gps(harbor_data)    # calculate interpolated data
     plot_figs(harbor_data)                  # display figures
