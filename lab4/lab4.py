@@ -68,22 +68,48 @@ def interpolate_wx_from_gps(harbor_data):
     :param harbor_data: A dictionary to collect data.
     :return: Nothing
     """
-    alts = harbor_data["gps_altitude"]  #list of altitudes from file
-    temps = harbor_data["wx_temperatures"]  #list of temps from file
-    wx_alt_up = [alts[0]]           #list of altitudes for ascent
-    wx_temp_up = [temps[0]]         #list of temps for ascent
-    wx_alt_down = []                                    #list of altitudes for descent
-    wx_temp_down = []                                   #list of temps for descent
+    # print(len(harbor_data["gps_altitude"]))
+    # print(len(harbor_data["wx_temperatures"]))
+    # alts = harbor_data["gps_altitude"]  #list of altitudes from file
+    # temps = harbor_data["wx_temperatures"]  #list of temps from file
+    # wx_alt_up = [alts[0]]           #list of altitudes for ascent
+    # wx_temp_up = [temps[0]]         #list of temps for ascent
+    # wx_alt_down = []                                    #list of altitudes for descent
+    # wx_temp_down = []                                   #list of temps for descent
 
-    index = 1
-    while [alts[index]] >= [wx_alt_up[index-1]]:        #run while the altitude is increasing
-        wx_alt_up += [alts[index]]  #add altitude to alt_up list    
-        index+=1
-    while index < (len(alts)):      #collect the rest of the altitudes (descent)
-        wx_alt_down += [alts[index]]    #add altitudes to alt_down list
-        index+=1
+    # index = 1
+    # while [alts[index]] >= [wx_alt_up[index-1]]:        #run while the altitude is increasing
+    #     wx_alt_up += [alts[index]]  #add altitude to alt_up list    
+    #     index+=1
+    # while index < (len(alts)):      #collect the rest of the altitudes (descent)
+    #     wx_alt_down += [alts[index]]    #add altitudes to alt_down list
+    #     index+=1
+    wx_times = harbor_data["wx_times"]
+    gps_times = harbor_data["gps_times"]
+    alts = list(np.linspace(0, (harbor_data["gps_altitude"])[0],
+                                         num = wx_times.index(gps_times[0])+1) )      #initialize list with values from 0-first altitude
+    gps_index = 0 
+    wx_index = 0
+    cur_time = gps_times[0] #current elapsed time in gps list
+    numseparate = 0 #number of missing entries between each elapsed time in gps list
 
-
+    for time in harbor_data["wx_times"]:
+        if(wx_times[wx_index] >= cur_time):
+            gps_index += 1
+            cur_time = gps_times[gps_index]
+            interp_alts = np.linspace((harbor_data["gps_altitude"])[gps_index - 1],     #add list of altitudes where start = gps altitude[gps_index-1], end = gps altitude[gps_index]
+                                        (harbor_data["gps_altitude"])[gps_index],       #number of entries to add = number of missing entries compared to wx
+                                         num = numseparate)
+            for value in interp_alts:       #add interpolated altitude values to list of alts
+                alts.append(value)
+            alts.append((harbor_data["gps_altitude"])[gps_index])  #add the current value of gps altitude to alts list
+            numseparate = 0 #reset the number of missing entries
+        else:
+            numseparate += 1 #increase number of missing entries
+        wx_index += 1
+    harbor_data["interpolated_altitude"] = alts     #add list with key of "interpolated_altitude" to harbor_data dictionary, 
+                                                    # stores altitudes and interpolated alts from gps_altitudes
+            
 
 
 
@@ -106,6 +132,11 @@ def plot_figs(harbor_data):
     plt.xlabel("Time Elapsed (s)")
     plt.plot(harbor_data["gps_times"], harbor_data["gps_altitude"]) #plot gps_times v gps_altitude
     plt.show()      # display plot
+
+    plt.figure()
+    plt.plot(harbor_data["wx_temperatures"], harbor_data["interpolated_altitude"])
+    plt.show()
+
 
 def wx_time_elapsed(start_time, times, harbor_data, end_time):
     """
@@ -176,6 +207,7 @@ def main():
 
     end_time = (harbor_data["gps_times"])[len(harbor_data["gps_times"]) - 1]        #find when flight ends according to gps file
     wx_time_elapsed(start_time, harbor_data["wx_times"], harbor_data, end_time)     #get elapsed wx times as seconds from start of flight
+    #pp.pprint((harbor_data["gps_times"]))
     interpolate_wx_from_gps(harbor_data)    # calculate interpolated data
     plot_figs(harbor_data)                  # display figures
 
