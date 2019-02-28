@@ -129,18 +129,18 @@ def plot_figs(harbor_data):
     plt.show()      # display plot
 
     plt.figure()
-    plt.subplot(1, 2, 1)
+    plt.subplot(1, 2, 1)    #select first suplot
     plt.title("Harbor Ascent Flight Data")
     plt.ylabel("Altitude, Feet")
     plt.xlabel("Temperature, F")
-    plt.plot(harbor_data["temps_up"], harbor_data["interpolated_altitude_up"])
+    plt.plot(harbor_data["temps_up"], harbor_data["interpolated_altitude_up"])  #plot ascending altitude and temp
 
-    plt.subplot(1, 2, 2)
+    plt.subplot(1, 2, 2)    #select second subplot
     plt.title("Harbor Descent Flight Data")
     plt.ylabel("Altitude, Feet")
     plt.xlabel("Temperature, F")
-    plt.plot(harbor_data["temps_down"], harbor_data["interpolated_altitude_down"])
-    plt.show()
+    plt.plot(harbor_data["temps_down"], harbor_data["interpolated_altitude_down"]) #plot descending altitude and temp
+    plt.show() #display plot
 
 
 def wx_time_elapsed(start_time, times, harbor_data, end_time):
