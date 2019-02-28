@@ -24,9 +24,14 @@ def read_wx_data(wx_file, harbor_data):
         file.readline() #skip first line
         for line in file:
             line_words = line.split(',')       #separate entries by space
-            wx_times.append(line_words[1])    #add times to wx_times list
-            wx_temperatures.append(float(line_words[3])) #add temperature to wx_temperatures list
-    
+            if(len(wx_times) == 0):
+                wx_times.append(line_words[1])    #add times to wx_times list
+                wx_temperatures.append(float(line_words[3])) #add temperature to wx_temperatures list
+
+            #get rid of bad data by checking difference between consecutive temp values   
+            elif(len(wx_temperatures) >= 1 and abs(float(line_words[3]) - wx_temperatures[-1]) < 20):       
+                wx_times.append(line_words[1])    #add times to wx_times list
+                wx_temperatures.append(float(line_words[3])) #add temperature to wx_temperatures list
     harbor_data["wx_times"] = wx_times  #store list of times in data dictionary
     harbor_data["wx_temperatures"] = wx_temperatures    #store list of temps in data dictionary
             
@@ -73,7 +78,6 @@ def interpolate_wx_from_gps(harbor_data):
     gps_altitudes = harbor_data["gps_altitude"]
     alts_up = list(np.linspace(0, gps_altitudes[0],
                                 num = (wx_times.index(gps_times[0])+1)) )      #initialize list with values from 0-first altitude
-    print(gps_altitudes[-1],' ', gps_altitudes[-2])
     alts_down = []
     gps_index = 1 
     wx_index = wx_times.index(gps_times[0])
@@ -100,7 +104,7 @@ def interpolate_wx_from_gps(harbor_data):
     alts_down.extend(list(np.linspace(gps_altitudes[-1], gps_altitudes[-2], num= 15)))
     harbor_data["interpolated_altitude_up"] = alts_up   #add lists of altitudes and interpolated alts from gps_altitudes to harbor_data dictionary, 
     harbor_data["interpolated_altitude_down"] = alts_down   #descending altitude
-    harbor_data["temps_up"] = (harbor_data["wx_temperatures"])[0:len(harbor_data["interpolated_altitude_up"])]
+    harbor_data["temps_up"] = (harbor_data["wx_temperatures"])[0:len(harbor_data["interpolated_altitude_up"])]  #number of temps is dependent on size of altitude lists
     harbor_data["temps_down"] = (harbor_data["wx_temperatures"])[len(harbor_data["interpolated_altitude_up"]):len(harbor_data["wx_times"])]
 
 
@@ -135,8 +139,6 @@ def plot_figs(harbor_data):
     plt.title("Harbor Descent Flight Data")
     plt.ylabel("Altitude, Feet")
     plt.xlabel("Temperature, F")
-    #pp.pprint((harbor_data["interpolated_altitude_down"])[-10: -1])
-    #print((harbor_data["temps_down"])[-10: -1])
     plt.plot(harbor_data["temps_down"], harbor_data["interpolated_altitude_down"])
     plt.show()
 
