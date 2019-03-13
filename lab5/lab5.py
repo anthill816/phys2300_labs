@@ -1,6 +1,8 @@
 from vpython import *
-from math import sin, cos
+from math import sin, cos, radians
 import argparse
+import numpy as np
+import pprint as pp
 
 
 
@@ -24,20 +26,44 @@ def motion_no_drag(data):
     """
     Create animation for projectile motion with no dragging force
     """
-    ball_nd = sphere(pos=vector(-25, data['init_height'], 0),
+    ball_nd = sphere(pos=vector(0, data['init_height'], 0),
                         radius=1, color=color.cyan, make_trail=True)
-    # Follow the movement of the ball
+    
+    # # Follow the movement of the ball
     scene.camera.follow(ball_nd)
     # Set initial velocity & position
 
+    index = 1
+    y_values = [data['init_height']]
+    y_velocities = [data['init_y_vel']]
+    x_values = [0]
+    while y_values[index-1] > 0 or index == 1:
+        new_x = x_values[index - 1] + data['init_x_vel'] * data['deltat'] # find next x position
+        x_values.append(new_x) #add generated x position to list
+        
+        new_y_vel = y_velocities[index - 1] + data['gravity'] * data['deltat'] # find new y velocity
+        y_velocities.append(new_y_vel)
+        new_y = y_values[index - 1] + new_y_vel * data['deltat']
+        y_values.append(new_y)
+        index += 1
     # Animate
+    pos_index = 0
+    while pos_index < len(y_values):
+        rate(100)
+        position = vector(x_values[pos_index], y_values[pos_index], 0)
+        ball_nd.pos = position
+        pos_index += 1
+
 
 
 def motion_drag(data):
     """
     Create animation for projectile motion with dragging force
     """
-    pass
+    pass 
+        
+
+    
 
 
 def main():
@@ -52,9 +78,13 @@ def main():
     args = parser.parse_args()
     # Set Variables
     data = {}       # empty dictionary for all data and variables
-    data['init_height'] = args.height   # y-axis
+    data['init_height'] = args.height   # y-axis  
     data['init_velocity'] = args.velocity  # m/s
     data['theta'] = args.angle       # degrees
+
+    rad_angle = radians(args.angle) # angle in radians
+    data['init_x_vel'] = cos(rad_angle) * args.velocity # velocity in the x-direction
+    data['init_y_vel'] = sin(rad_angle) * args.velocity # velocity in the y-direction
 
     # Constants
     data['rho'] = 1.225  # kg/m^3
@@ -70,7 +100,7 @@ def main():
     # Set Scene
     set_scene(data)
     # 2) No Drag Animation
-#    motion_no_drag(data)
+    motion_no_drag(data)
     # 3) Drag Animation
 #     motion_drag(data)
     # 4) Plot Information: extra credit
