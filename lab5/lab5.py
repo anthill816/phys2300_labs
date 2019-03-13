@@ -35,7 +35,7 @@ def motion_no_drag(data):
 
 def motion_drag(data):
     """
-    Create animation for projectile motion with no dragging force
+    Create animation for projectile motion with dragging force
     """
     pass
 
@@ -44,12 +44,18 @@ def main():
     """
     """
     # 1) Parse the arguments
+    parser = argparse.ArgumentParser(description="Demo")
+    parser.add_argument("--velocity", "-v", action="store", help="velocity in m/s", dest="velocity", type=float, required="true")
+    parser.add_argument("--angle", "-a", action="store", help="angle in degrees", dest="angle", type=float, required="true")
+    parser.add_argument("--height",  action="store", help="height in meters", dest="height", type=float, default=1.2)
 
+    args = parser.parse_args()
     # Set Variables
     data = {}       # empty dictionary for all data and variables
-#    data['init_height'] = args.height   # y-axis
-#    data['init_velocity'] = args.velocity  # m/s
-#    data['theta'] = args.angle       # degrees
+    data['init_height'] = args.height   # y-axis
+    data['init_velocity'] = args.velocity  # m/s
+    data['theta'] = args.angle       # degrees
+
     # Constants
     data['rho'] = 1.225  # kg/m^3
     data['Cd'] = 0.5    # coefficient friction
