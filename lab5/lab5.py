@@ -68,7 +68,7 @@ def main():
     data['alpha'] = data['rho'] * data['Cd'] * data['ball_area'] / 2.0
     data['beta'] = data['alpha'] / data['ball_mass']
     # Set Scene
-#    set_scene(data)
+    set_scene(data)
     # 2) No Drag Animation
 #    motion_no_drag(data)
     # 3) Drag Animation
