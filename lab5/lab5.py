@@ -31,7 +31,7 @@ def motion_no_drag(data):
     
     # # Follow the movement of the ball
     scene.camera.follow(ball_nd)
-    # Set initial velocity & position
+    # Create lists of x and y values of motion
 
     index = 1
     y_values = [data['init_height']]
@@ -46,7 +46,12 @@ def motion_no_drag(data):
         new_y = y_values[index - 1] + new_y_vel * data['deltat']
         y_values.append(new_y)
         index += 1
-    # Animate
+
+    #create scenery elements (ground and mountains)
+    ground = box(pos=vector(x_values[-1]/2,-1,-x_values[-1]/4 + 10), color=color.green, size=vector(x_values[-1] + 20, 1, x_values[-1]/2))
+    mount1 = cone(pos=vector(3 * x_values[-1] / 8 - 20,-1,-3 * x_values[-1] / 8), axis=vector(0, max(y_values), 0), radius=(3 * x_values[-1] / 8), color=color.white)
+    mount2 = cone(pos=vector(x_values[-1] * .825 - 20,-1,-3 * x_values[-1] / 8), axis=vector(0, max(y_values) * 2, 0), radius=(3 * x_values[-1] / 8), color=color.white)
+    #Animate
     pos_index = 0
     while pos_index < len(y_values):
         rate(100)
@@ -60,7 +65,20 @@ def motion_drag(data):
     """
     Create animation for projectile motion with dragging force
     """
-    pass 
+    index = 1
+    y_values = [data['init_height']]
+    y_velocities = [data['init_y_vel']]
+    x_values = [0]
+    while y_values[index-1] > 0 or index == 1:
+        new_x = x_values[index - 1] + data['init_x_vel'] * data['deltat'] # find next x position
+        x_values.append(new_x) #add generated x position to list
+        
+        new_y_vel = y_velocities[index - 1] + data['gravity'] * data['deltat'] # find new y velocity
+        y_velocities.append(new_y_vel)
+        new_y = y_values[index - 1] + new_y_vel * data['deltat']
+        y_values.append(new_y)
+        index += 1
+     
         
 
     
