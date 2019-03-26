@@ -33,12 +33,12 @@ def animate_pendulum():
     # frame_rate = 100
     # steps_per_frame = 10
     # h = 1.0/(frame_rate*steps_per_frame) # size of single step
-    # for i in range(steps_per_frame):
-    #     k1 = h * f_theta_omega(angles, t)
-    #     k2 = h * f_theta_omega(angles + 0.5 * k1, t)
-    #     k3 = h * f_theta_omega(angles + 0.5 * k2, t)
-    #     k4 = h * f_theta_omega(angles + k3, t)
-    #     angles += (k1 + 2 * k2, 2 * k3, k4)/6
+    for i in range(steps_per_frame):
+        k1 = h * f_theta_omega(angles, t)
+        k2 = h * f_theta_omega(angles + 0.5 * k1, t)
+        k3 = h * f_theta_omega(angles + 0.5 * k2, t)
+        k4 = h * f_theta_omega(angles + k3, t)
+        angles += (k1 + 2 * k2, 2 * k3, k4)/6
     pass
 
 def main():
