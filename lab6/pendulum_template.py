@@ -121,7 +121,7 @@ def main():
         rod2.axis = vector(x_2 * l_2, y_2 * l_2, 0)
         # Update the pendulum's bob
         bob1.pos=vector(x + .025, y + 1, 0)
-        bob2.pos = vector(x_2 + .025, y_2 + .5, 0)
+        bob2.pos = vector(x_2 * l_2 + 0.025, y_2 *l_2 + 1, 0)
 
     plot_theta(angles, times)
 
