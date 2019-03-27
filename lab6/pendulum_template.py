@@ -26,13 +26,20 @@ def set_scene():
 
 def f(angles):
     """
-    Pendulum
+    First Pendulum
+    param: 
     """
     theta = angles[0]
     omega = angles[1]
     ftheta = omega
     fomega = -(g/l)*np.sin(theta) -  2 * omega
     return np.array([ftheta, fomega], float)
+
+def f_2nd(angles):
+    """
+    """
+    pass
+
 
 def plot_theta(angles, times):
     """
@@ -41,6 +48,9 @@ def plot_theta(angles, times):
     Param: times = list of times
     """
     plt.plot(times, angles)
+    plt.xlabel("Time in Seconds")
+    plt.ylabel("Angle in Radians")
+    plt.title("Movement of a Pendulum")
     plt.show()
     
 
@@ -64,7 +74,8 @@ def main():
 
     #display starting point of pendulum rod
     pivotball = sphere(pos=vector(x, y, 0), radius=.05)
-    rod = cylinder(pos=vector(x, y, 0), axis=vector(cos(r[0]), -sin(r[0]), 0), radius=.01)
+    rod1 = cylinder(pos=vector(x, y, 0), axis=vector(cos(r[0]), -sin(r[0]), 0), radius=.01)
+    bob1 = sphere(pos=vector(x, y, 0), radius=0.07)
     # Loop over some time interval
     dt = 0.01
     t = 0
@@ -86,8 +97,10 @@ def main():
         y = -abs(np.sin(r[0] - np.pi/2)) 
         
         # Update the cylinder axis
-        rod.axis = vector(x, y, 0)
+        rod1.axis = vector(x, y, 0)
         # Update the pendulum's bob
+        bob1.pos=vector(x + .025, y + 1, 0)
+
     plot_theta(angles, times)
 
 if __name__ == "__main__":
