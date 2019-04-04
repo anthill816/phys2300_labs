@@ -26,8 +26,9 @@ def set_scene():
 
 def f(angles):
     """
-    First Pendulum
+    First Pendulum - length of 1m
     param: angles = array with index 0 = theta, index 1 = omega
+    return: array with index 0 = theta, index 1 = omega
     """
     theta = angles[0]
     omega = angles[1]
@@ -37,8 +38,9 @@ def f(angles):
 
 def f_2nd(angles):
     """
-    Second pendulum
+    Second pendulum - length of 1.5m
     param: angles = array with index 0 = theta, index 1 = omega
+    return: array with index 0 = theta, index 1 = omega
     """
     theta = angles[0]
     omega = angles[1]
@@ -53,10 +55,13 @@ def plot_theta(angles, times):
     Param: angles = list of thetas
     Param: times = list of times
     """
+    #create plot of theta v time
     plt.plot(times, angles)
+    #set labels and title
     plt.xlabel("Time in Seconds")
     plt.ylabel("Angle in Radians")
     plt.title("Movement of a Pendulum")
+    #display plot
     plt.show()
 
 
@@ -66,7 +71,7 @@ def main():
     """
     #set vpython scene
     set_scene()
-
+    #arrays used for plot of theta v time of first pendulum
     angles = []
     times = []
 
@@ -86,10 +91,10 @@ def main():
     rod2 = cylinder(pos=vector(x, y, 0), axis=vector(cos(r[0]), -sin(r[0]), 0), radius=.01, color=color.blue)
     bob1 = sphere(pos=vector(x, y, 0), radius=0.07)
     bob2 = sphere(pos=vector(x, y, 0), radius=0.07, color=color.blue)
-    # Loop over some time interval
+
     dt = 0.01
     t = 0
-        # Use the 4'th order Runga-Kutta approximation
+    # Use the 4'th order Runga-Kutta approximation
     for i in range(framerate):
         rate(5)
         #get values for first pendulum
@@ -114,6 +119,7 @@ def main():
         x = np.cos(r[0] - np.pi/2)
         y = -abs(np.sin(r[0] - np.pi/2)) 
         
+        #Update position of second pendulum
         x_2 = np.cos(r_2[0] - np.pi/2)
         y_2 = -abs(np.sin(r_2[0] - np.pi/2)) 
         # Update the cylinder axis
@@ -122,7 +128,7 @@ def main():
         # Update the pendulum's bob
         bob1.pos=vector(x + .025, y + 1, 0)
         bob2.pos = vector(x_2 * l_2 + 0.025, y_2 *l_2 + 1, 0)
-
+    #plot theta v. time of first pendulum
     plot_theta(angles, times)
 
 if __name__ == "__main__":
